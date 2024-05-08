@@ -1,10 +1,25 @@
 ---
 title: "HW7 - RNA-Seq Analysis"
-linkTitle: "HW6: RNA-Seq Analysis"
-description: >
+date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_float:
+        collapsed: true
+        smooth_scroll: true
+    toc_depth: 3
+    fig_caption: yes
+    code_folding: show
+    number_sections: false
+fontsize: 14pt
 type: docs
-weight: 307
+weight: 11
 ---
+
+<!---
+- Compile from command-line
+Rscript -e "rmarkdown::render('HW07.Rmd', c('BiocStyle::html_document'), clean=FALSE)"
+-->
 
 <br></br>
 

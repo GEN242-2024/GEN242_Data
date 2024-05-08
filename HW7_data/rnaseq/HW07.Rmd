@@ -80,6 +80,8 @@ Note, for Tasks 1-3 only the code and/or text needs to be included in the homewo
 
 Note, for Tasks 4 only include the code and/or text in your homework submission (no data/result files). 
 
+Starter code for the gene ranges part of this assignment is given below.
+
 ```{r}
 gene_ranges <- genes(txdb)
 gene_ranges_countDF <- summarizeOverlaps(gene_ranges, bfl, mode="Union", ignore.strand=FALSE, inter.feature=FALSE, singleEnd=FALSE)
@@ -99,7 +101,8 @@ Compare the DEG result of the two methods in two separate 4-way Venn diagrams fo
 
 Note, for Tasks 5 include both the code and the resulting images in your homework submission. 
 
-Here is some starter code for the edgeR analysis for theunstranded count table:
+The following gives the starter code for the edgeR analysis using the the unstranded count table.
+
 ```{r}
 library(edgeR)
 cmp <- readComp(file="targetsPE.txt", format="matrix", delim="-")

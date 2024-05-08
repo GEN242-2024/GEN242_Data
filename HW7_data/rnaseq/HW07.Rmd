@@ -26,7 +26,7 @@ Source code downloads: &nbsp; <a href="https://raw.githubusercontent.com/tgirke/
   RStudio session to this directory. Next load all libraries and objects required for the read counting and the downstream steps of this. 
   assignment. Make sure the required libararies are installed on your computer.
 
-```r
+```{r}
 library(systemPipeR); library(GenomicAlignments); library(GenomicFeatures); library(BiocParallel)
 txdb <- loadDb("./data/tair10.sqlite")
 eByg <- exonsBy(txdb, by = c("gene"))
@@ -47,7 +47,7 @@ bfl <- BamFileList(outpaths, yieldSize = 50000, index = character())
    included in the homework results (see `HW7.R` below).
 
 
-```r
+```{r}
 unstranded <- summarizeOverlaps(eByg, bfl, mode="Union", 
                                                 ignore.strand=TRUE, 
                                                 # preprocess.reads=invertStrand,
@@ -80,6 +80,13 @@ Note, for Tasks 1-3 only the code and/or text needs to be included in the homewo
 
 Note, for Tasks 4 only include the code and/or text in your homework submission (no data/result files). 
 
+```{r}
+gene_ranges <- genes(txdb)
+gene_ranges_countDF <- summarizeOverlaps(gene_ranges, bfl, mode="Union", ignore.strand=FALSE, inter.feature=FALSE, singleEnd=FALSE)
+assays(gene_ranges_countDF)$counts[1:4,]
+```
+
+
 ## C. DEG analysis
 
 - __Task 5__: Perform the DEG analysis with `edgeR` as outlined under section 6 of the RNA-Seq workflow [here](https://girke.bioinformatics.ucr.edu/GEN242/tutorials/sprnaseq/sprnaseq/#run-edger). 
@@ -91,6 +98,22 @@ Compare the DEG result of the two methods in two separate 4-way Venn diagrams fo
    2. 4-way Venn diagram for sense strand count table
 
 Note, for Tasks 5 include both the code and the resulting images in your homework submission. 
+
+Here is some starter code for the edgeR analysis for theunstranded count table:
+```{r}
+library(edgeR)
+cmp <- readComp(file="targetsPE.txt", format="matrix", delim="-")
+targets <- read.delim("targetsPE.txt", comment.char = "#") 
+colnames(unstranded) <- gsub("\\..*", "", colnames(unstranded))
+edgeDF_unstranded <- run_edgeR(countDF=unstranded, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
+
+## Compare the DEG results of the two methods in two separate 4-way Venn diagrams
+## (1) 4-way Venn diagram for unstranded count table
+DEG_list_unstranded <- filterDEGs(degDF=edgeDF_unstranded, filter=c(Fold=2, FDR=40), plot=FALSE)
+vennsetup <- overLapper(DEG_list_unstranded$Up[6:9], type="vennsets")
+vennsetdown <- overLapper(DEG_list_unstranded$Down[6:9], type="vennsets")
+vennPlot(list(vennsetup, vennsetdown), mymain="", mysub="", colmode=2, ccol=c("blue", "red"))
+```
 
 ## Homework submission
 
